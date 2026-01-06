@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riwayat Pembelian - Camilan Emak</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --bg: #f4f1de;
+            --accent: #e07a5f;
+            --secondary: #81b29a;
+            --muted: #f2cc8f;
+            --primary: #4a7c59;
+            --highlight: #f4a261;
+            --text: #3d405b;
+            --card: #ffffff;
+            --glass: rgba(255,255,255,0.8);
+            --radius: 16px;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: linear-gradient(180deg, var(--bg), #fff); color: var(--text); }
+        header { display: flex; align-items: center; justify-content: space-between; padding: 18px 28px; position: sticky; top: 0; background: rgba(255,255,255,0.85); backdrop-filter: blur(6px); z-index: 10; border-bottom: 1px solid rgba(0,0,0,0.03); }
+        .brand { display: flex; gap: 12px; align-items: center; }
+        .logo { width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, var(--accent), var(--secondary)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 18px; }
+        .logo .logo-img { height: 40px; }
+        nav a { margin-left: 18px; color: var(--muted); text-decoration: none; font-weight: 600; }
+        .history-container { max-width: 1200px; margin: 0 auto; padding: 48px 28px; }
+        .email-input-section { background: var(--card); border-radius: 20px; padding: 32px; box-shadow: 0 12px 32px rgba(0,0,0,0.06); margin-bottom: 32px; text-align: center; }
+        .email-input-section h2 { margin: 0 0 20px; color: var(--primary); }
+        .email-form { display: flex; gap: 12px; justify-content: center; align-items: center; flex-wrap: wrap; }
+        .email-input { padding: 12px 16px; border: 2px solid #e9ecef; border-radius: 12px; font-size: 16px; flex: 1; min-width: 250px; }
+        .email-submit { padding: 12px 24px; border-radius: 12px; background: linear-gradient(135deg, var(--accent), var(--secondary)); color: white; border: none; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .email-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(224, 122, 95, 0.3); }
+        .orders-section { background: var(--card); border-radius: 20px; padding: 32px; box-shadow: 0 12px 32px rgba(0,0,0,0.06); }
+        .orders-section h3 { margin: 0 0 24px; color: var(--primary); }
+        .order-card { border: 1px solid #e9ecef; border-radius: 16px; padding: 24px; margin-bottom: 20px; }
+        .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .order-id { font-weight: 700; color: var(--primary); }
+        .order-date { color: var(--muted); }
+        .order-status { padding: 4px 12px; border-radius: 12px; font-size: 0.8em; font-weight: 600; }
+        .status.pending { background: #fff3cd; color: #856404; }
+        .status.processing { background: #cce5ff; color: #004085; }
+        .status.completed { background: #d4edda; color: #155724; }
+        .status.cancelled { background: #f8d7da; color: #721c24; }
+        .order-items { margin: 16px 0; }
+        .order-item { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+        .order-item img { width: 50px; height: 50px; object-fit: cover; border-radius: 8px; }
+        .order-total { font-weight: 700; color: var(--secondary); font-size: 1.2em; }
+        .order-actions { display: flex; gap: 8px; margin-top: 16px; }
+        .action-btn { padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; }
+        .print-btn { background: var(--primary); color: white; }
+        .print-btn:hover { background: var(--secondary); }
+        .no-orders { text-align: center; color: var(--muted); padding: 40px; }
+        .back-btn { background: var(--accent); color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 14px; transition: all 0.3s ease; }
+        .back-btn:hover { background: var(--secondary); transform: translateY(-2px); }
+        @media (max-width: 768px) { .email-form { flex-direction: column; } .order-header { flex-direction: column; align-items: flex-start; gap: 8px; } .order-actions { flex-direction: column; } }
+        @media print {
+            body * { visibility: hidden; }
+            .receipt, .receipt * { visibility: visible; }
+            .receipt { position: absolute; left: 0; top: 0; width: 100%; }
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="brand">
+            <button class="back-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i> Kembali</button>
+            <div class="logo"><img src="logo.jpeg" alt="Logo Camilan Emak" class="logo-img"></div>
+            <div>
+                <div style="font-weight:700">Camilan Emak</div>
+                <div style="font-size:12px;color:var(--muted)">Riwayat Pembelian</div>
+            </div>
+        </div>
+        <nav>
+            <a href="Untitled-1.html">Beranda</a>
+            <a href="products.html">Produk</a>
+            <a href="cart.html">Keranjang</a>
+        </nav>
+    </header>
+
+    <div class="history-container">
+        <div class="email-input-section">
+            <h2>Masukkan Email Anda</h2>
+            <form class="email-form" onsubmit="loadOrderHistory(event)">
+                <input type="email" class="email-input" id="userEmail" placeholder="Masukkan email Anda" required>
+                <button type="submit" class="email-submit">Lihat Riwayat</button>
+            </form>
+        </div>
+
+        <div class="orders-section">
+            <h3>Riwayat Pembelian</h3>
+            <div id="orders-container">
+                <div class="no-orders">
+                    <i class="fas fa-shopping-bag" style="font-size: 48px; color: var(--muted); margin-bottom: 16px;"></i>
+                    <p>Masukkan email Anda untuk melihat riwayat pembelian</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function loadOrderHistory(event) {
+            event.preventDefault();
+            const email = document.getElementById('userEmail').value.trim().toLowerCase();
+            const allOrders = JSON.parse(localStorage.getItem('admin_orders')) || [];
+            const userOrders = allOrders.filter(order => order.email.toLowerCase() === email);
+
+            const container = document.getElementById('orders-container');
+
+            if (userOrders.length === 0) {
+                container.innerHTML = `
+                    <div class="no-orders">
+                        <i class="fas fa-shopping-bag" style="font-size: 48px; color: var(--muted); margin-bottom: 16px;"></i>
+                        <p>Tidak ada riwayat pembelian untuk email ini</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = userOrders.map(order => `
+                <div class="order-card">
+                    <div class="order-header">
+                        <div>
+                            <div class="order-id">Pesanan #${order.id}</div>
+                            <div class="order-date">${new Date(order.timestamp).toLocaleDateString('id-ID')} ${new Date(order.timestamp).toLocaleTimeString('id-ID')}</div>
+                        </div>
+                        <span class="order-status status ${order.status}">${getStatusText(order.status)}</span>
+                    </div>
+                    <div class="order-items">
+                        ${order.items.map(item => `
+                            <div class="order-item">
+                                <img src="${item.image}" alt="${item.name}">
+                                <div>
+                                    <strong>${item.name}</strong><br>
+                                    ${item.quantity} x Rp ${item.price.toLocaleString()}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="order-total">Total: Rp ${order.total.toLocaleString()}</div>
+                    <div class="order-actions">
+                        <button class="action-btn print-btn" onclick="printReceipt(${order.id})">
+                            <i class="fas fa-print"></i> Cetak Struk
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'pending': 'Pending',
+                'processing': 'Diproses',
+                'completed': 'Selesai',
+                'cancelled': 'Dibatalkan'
+            };
+            return statusMap[status] || status;
+        }
+
+        function printReceipt(orderId) {
+            const allOrders = JSON.parse(localStorage.getItem('admin_orders')) || [];
+            const order = allOrders.find(o => o.id === orderId);
+
+            if (!order) return;
+
+            const receiptWindow = window.open('', '_blank');
+            receiptWindow.document.write(`
+                <html>
+                <head>
+                    <title>Struk Pembelian - Camilan Emak</title>
+                    <style>
+                        body { font-family: 'Courier New', monospace; margin: 20px; }
+                        .receipt { max-width: 400px; margin: 0 auto; }
+                        .header { text-align: center; margin-bottom: 20px; }
+                        .header h1 { margin: 0; font-size: 24px; }
+                        .header p { margin: 5px 0; }
+                        .order-info { margin: 20px 0; }
+                        .item { display: flex; justify-content: space-between; margin: 5px 0; }
+                        .total { border-top: 1px solid #000; padding-top: 10px; font-weight: bold; }
+                        .footer { text-align: center; margin-top: 20px; font-size: 12px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="receipt">
+                        <div class="header">
+                            <h1>Camilan Emak</h1>
+                            <p>Camilan rumahan, rasa penuh cinta</p>
+                            <p>================================</p>
+                        </div>
+                        <div class="order-info">
+                            <p><strong>Pesanan #${order.id}</strong></p>
+                            <p>Tanggal: ${new Date(order.timestamp).toLocaleDateString('id-ID')} ${new Date(order.timestamp).toLocaleTimeString('id-ID')}</p>
+                            <p>Nama: ${order.name}</p>
+                            <p>Email: ${order.email}</p>
+                            <p>Pembayaran: ${getPaymentText(order.paymentMethod)}</p>
+                        </div>
+                        <div class="items">
+                            <p><strong>Item Pesanan:</strong></p>
+                            ${order.items.map(item => `
+                                <div class="item">
+                                    <span>${item.name} (${item.quantity}x)</span>
+                                    <span>Rp ${(item.price * item.quantity).toLocaleString()}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="total">
+                            <div class="item">
+                                <span>TOTAL</span>
+                                <span>Rp ${order.total.toLocaleString()}</span>
+                            </div>
+                        </div>
+                        <div class="footer">
+                            <p>Terima kasih telah berbelanja!</p>
+                            <p>Status: ${getStatusText(order.status)}</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `);
+            receiptWindow.document.close();
+            receiptWindow.print();
+        }
+
+        function getPaymentText(method) {
+            const paymentMap = {
+                'bank-transfer': 'Transfer Bank',
+                'bank-bca': 'Transfer BCA',
+                'bank-bri': 'Transfer BRI',
+                'bank-mandiri': 'Transfer Mandiri',
+                'e-wallet': 'E-Wallet',
+                'e-wallet-gopay': 'GoPay',
+                'e-wallet-ovo': 'OVO',
+                'e-wallet-dana': 'Dana',
+                'cod': 'Cash on Delivery'
+            };
+            return paymentMap[method] || method;
+        }
+    </script>
+</body>
+</html>
